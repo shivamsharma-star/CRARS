@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="plus2.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        
+        <div class="header-right">
+            <img src="/images/final 1 with white edges.png" alt="Logo" class="logo">
+        </div>
+        <% if (message) { %>
+            <script>
+              alert("<%= message %>");
+            </script>
+          <% } %>
+          <% if (loginError) { %>
+            <script>
+              alert("<%= loginError %>");
+            </script>
+          <% } %>
+
+        <!-- right -->
+        <div class="header-left">
+            <nav>
+                <ul>
+                    <!-- <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Help</a></li> -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="login-container">
+        <div class="overlay">
+            <div class="logo">
+                <img src="/images/final 1 with white edges.png" alt="">
+            </div>
+            <div class="form-box" id="loginForm">
+                <!-- Login Form -->
+                <h2>Login</h2>
+                <form action="/dashboard" method="post">
+                    <div class="input-box">
+                        <input type="Email" name="Email" required>
+                        <label>Email</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" name="password" required>
+                        <label>Password</label>
+                    </div>
+                    <button type="submit" class="btn">Get Started</button>
+                    <div class="extra-options">
+                        <label><input type="checkbox"> Keep Logged In</label>
+                        <a href="#" class="forgot">Forgot Password?</a>
+                    </div>
+                </form>
+                <div class="footer-links">
+                    <a href="#" id="showSignUp">Create Account</a> | <a href="#">Need Help?</a>
+                </div>
+            </div>
+
+            <!-- Signup Form (Hidden Initially) -->
+            <div class="form-box" id="signUpForm" style="display: none;">
+                <h2>Create Account</h2>
+                <form id="createAccountForm" onsubmit="return validatePasswords()" action="/signup" method="post" >
+                    <div class="input-box">
+                        <input name="name" type="text" required>
+                        <label>Full Name</label>
+                    </div>
+
+             <div class="emailcontaner">      
+
+                    <div class="input-box">
+                        <input name="email" type="email" id="emailInput" required>
+                        <label>Email</label>
+                    </div>
+    <!-- Email verification selction  -->
+
+    <button  type="button" onclick="sendOTP()" class="btn">Send OTP</button>
+
+</div> 
+
+    <div id="otpSection" style="display: none;">
+        <div class="input-box">
+            <input type="text" id="otpInput" required>
+            <label>OTP</label>
+        </div>
+        <button type="button" onclick="verifyOTP()" class="btn">Verify OTP</button>
+        <div id="otpMessage"></div>
+    </div>
+
+<!-- Email verification section end  -->
+
+                    <div class="input-box" >
+                            <input name="location" type="text" id="place-input" readonly >
+                            <label > </label>
+                    </div>
+                    
+                  <div class="input-box" >
+                    <div class="location-contaner1">
+                           
+                        latitude:  <input type="text" id="latitude" name="latitude" readonly>
+                            <!-- <label for="llatitude">latitude:</label> -->
+                         
+                            longitude: <input type="text" id="longitude" name="longitude" readonly>
+                            <!-- <label for="longitude">longitude:</label> -->
+                        </div>
+                    </div>
+                    
+<!-- construction area 35  -->
+
+<div class="input-box">
+    <input type="password" id="password" name="password" required oninput="checkPasswordStrength()">
+    <label for="password">Password</label>
+</div>
+<div class="strength">
+    <div class="strength-meter">
+        <div id="strengthMeterFill" class="strength-meter-fill"></div>
+    </div>
+    <span id="strengthText" class="strength-text">Weak</span>
+</div>
+<div class="input-box">
+    <input type="password" id="repeatPassword" name="repeatPassword" required oninput="checkPasswordsMatch()">
+    <label for="repeatPassword">Repeat Password</label>
+</div>
+<div class="error" id="error"></div>
+<button type="submit" id="submitButton" class="btn disabled" disabled>Passwords do not match</button>
+
+
+                    <!-- <div class="input-box">
+                        <input type="password" required>
+                        <label>Password</label>
+                    </div>
+                    <button type="submit" class="btn">Sign Up</button> -->
+                    <div class="footer-links">
+                        <a href="#" id="showLogin">Already have an account? Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- constructin area 24 nov -->
+        <div class="main-page">
+            <div class="floating-btn-container">   
+            <button id="open-modal" onclick="startVoiceRecognition()"><img class="mic" src="images/mic.gif" alt=""> </button>
+            </div>
+        </div>
+     
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Fill Information</h2>
+            <button id="close-modal">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="alert-container" style="animation: fadeIn 1s;" >
+                <div class="headalert">
+                <img class="elight" src="/images/Emergency_Light.gif" alt="">
+               <div class="topalert"> <h1> Emergency Alert</h1></div>
+            </div>
+        
+                <div class="alert-message">
+                    <strong>Warning:</strong> This is an emergency. Please do not share false information.
+                </div>
+                <form action="create_alert" method="post">
+                    <input  type="text" hidden id="name" placeholder="Title" name="title" value="Emergency" >
+                    <input hidden type="text" id="name" placeholder="Title" name="sender_id" hidden value="0">
+                    <input type="text" id="longitude1" placeholder="locationdetails"  name="longitude"  >
+                    <input type="text" id="lattitude1" placeholder="locationdetails"  name="lattitude" >
+                    <input type="text" id="location" placeholder="locationdetails"  name="cityname" value="ONmap" hidden>
+                    <input hidden type="text" id="type" placeholder="type"  name="type" value="em">
+
+
+
+                <div class="location" id="location-box" hidden>
+                    <strong>Your Current Location:</strong>
+                    <span id="location">Loading...</span>
+                </div>
+        
+                <div class="description-box">
+                    <label for="description">Emergency Description:</label>
+                    <textarea name="discription" id="description" rows="5" placeholder="Please describe the emergency situation..." required></textarea>
+                    <div class="mic-icon" onclick="startVoiceRecognition()" ></div>
+                </div>
+                <button id="submit-btn">Submit</button>
+
+                <button class="send-alert-btn" onclick="sendAlert()">Send Emergency Alert</button>
+        
+                
+            </form>
+                    <!-- <p>Your alert will be sent to the nearest authorities. Please ensure your details are accurate.</p>
+                </div> -->
+            </div>
+        
+            <script>
+                // Get the current location of the user
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        document.getElementById('location').textContent = `Latitude: ${lat}, Longitude: ${lon}`;
+                    }, function() {
+                        document.getElementById('location').textContent = 'Unable to fetch location';
+                    });
+                }
+        
+                // Send the alert (simulation)
+                function sendAlert() {
+                    const description = document.getElementById('description').value;
+                    if (description) {
+                        alert("Emergency alert sent with description: " + description);
+                    } else {
+                        alert("Please provide a description of the emergency.");
+                    }
+                }
+        
+                // Voice Recognition Functionality
+                function startVoiceRecognition() {
+                    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                    recognition.lang = 'en-US';
+                    // recognition.interimResults = false; 
+                    recognition.continuous = true; 
+                    recognition.start();
+                    
+                    recognition.onresult = function(event) {
+                        const speechToText = event.results[0][0].transcript;
+                        document.getElementById('description').value = " "+speechToText;
+                    }
+        
+                    recognition.onerror = function(event) {
+                        alert("Voice recognition failed. Please try again.");
+                    }
+                }
+            </script>
+        </div>
+        <div class="modal-footer">
+            <!-- <button id="submit-btn">send</button> -->
+        </div>
+    </div>
+</div>
+
+<script>
+  const openModalBtn = document.getElementById('open-modal');
+  const closeModalBtn = document.getElementById('close-modal');
+  const modal = document.getElementById('modal');
+  const submitBtn = document.getElementById('submit-btn');
+
+  // Open Modal
+  openModalBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+  });
+
+  // Close Modal`
+  closeModalBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+  });
+
+  // Submit Information
+  submitBtn.addEventListener('click', () => {
+      const name = document.getElementById('name').value;
+      const college = document.getElementById('college').value;
+
+      if (name && college) {
+          alert(`Name: ${name}\nCollege: ${college}`);
+          modal.style.display = 'none'; // Close modal after submitting
+      } else {
+          alert('Please fill in all fields!');
+      }
+  });
+</script>
+   
+    </div>
+<!-- script for DOM -->
+    <script>
+        // Switch to Sign Up Form with animation
+        document.getElementById("showSignUp").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("signUpForm").style.display = "block";
+            document.getElementById("signUpForm").classList.add("slide-in-right");
+        });
+
+        // Switch to Login Form with animation
+        document.getElementById("showLogin").addEventListener("click", function (e) {
+            e.preventDefault();
+            document.getElementById("signUpForm").style.display = "none";
+            document.getElementById("loginForm").style.display = "block";
+            document.getElementById("loginForm").classList.add("slide-in-left");
+        });
+    </script>
+
+<!--  javascript for location fetching of user -->
+
+<script>
+    let timeout = null;  // Variable to store timeout ID for debounce
+
+    // Debounce function to limit API calls
+    function debounce(callback, delay) {
+        return function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(callback, delay);
+        };
+    }
+
+    // Function to fetch latitude and longitude from Nominatim
+    function fetchCoordinates() {
+        var place = document.getElementById('place-input').value;
+
+        if (place.length < 3) {
+            // Do not trigger search if input is less than 3 characters
+            return;
+        }
+
+        var url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}`;
+
+        // Fetch data from Nominatim API
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    // Get the latitude and longitude of the first result
+                    var latitude = data[0].lat;
+                    var longitude = data[0].lon;
+
+                    // Set the values to the input fields
+                    document.getElementById('latitude').value = latitude;
+                    document.getElementById('longitude').value = longitude;
+                    document.getElementById('latitude1').value = latitude;
+                    document.getElementById('longitude1').value = longitude;
+                } else {
+                    // Clear fields if no result found
+                    document.getElementById('latitude').value = '';
+                    document.getElementById('longitude').value = '';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Optionally handle error
+            });
+    }
+
+    // Function to get the user's current location
+    function getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    // Function to display the user's current position in the latitude and longitude fields
+    function showPosition(position) {
+        document.getElementById('latitude').value = position.coords.latitude;
+        document.getElementById('longitude').value = position.coords.longitude;
+        document.getElementById('latitude1').value = position.coords.latitude;
+        document.getElementById('longitude1').value = position.coords.longitude;
+    }
+
+    // Error handler for geolocation
+    function showError(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                alert("User denied the request for Geolocation.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("Location information is unavailable.");
+                break;
+            case error.TIMEOUT:
+                alert("The request to get user location timed out.");
+                break;
+            case error.UNKNOWN_ERROR:
+                alert("An unknown error occurred.");
+                break;
+        }
+    }
+
+    // Add event listener for user typing in the place input field
+    document.getElementById('place-input').addEventListener('input', debounce(fetchCoordinates, 500));
+
+    // Get the user's location when the page loads
+    window.onload = function() {
+        getUserLocation();
+    };
+</script>
+
+<script>
+    // Function to fetch location name based on latitude and longitude
+function fetchLocationName(latitude, longitude) {
+    const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.address) {
+                // Set the location name in the place-input field
+                const locationName = data.display_name || "Location not found";
+                document.getElementById('place-input').value = locationName;
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching location name:", error);
+        });
+}
+
+// Function to display the user's current position and fetch the location name
+function showPosition(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    document.getElementById('latitude').value = latitude;
+    document.getElementById('longitude').value = longitude;
+    document.getElementById('latitude1').value = latitude;
+    document.getElementById('longitude1').value = longitude;
+
+    // Fetch location name based on coordinates
+    fetchLocationName(latitude, longitude);
+}
+
+// Get the user's location when the page loads
+window.onload = function() {
+    getUserLocation();
+};
+
+</script>
+
+
+<!-- javascript for password checking constrain -->
+<script>
+    function validatePasswords() {
+        const password = document.getElementById("password").value;
+        const repeatPassword = document.getElementById("repeatPassword").value;
+        const errorDiv = document.getElementById("error");
+
+        if (password !== repeatPassword) {
+            errorDiv.textContent = "Passwords do not match!";
+            return false; // Prevent form submission
+        }
+        return true; // Allow form submission
+    }
+
+  
+
+    function checkPasswordStrength() {
+        const password = document.getElementById("password").value;
+        const strengthMeterFill = document.getElementById("strengthMeterFill");
+        const strengthText = document.getElementById("strengthText");
+
+        let strength = 0;
+
+        if (/[A-Z]/.test(password)) strength += 1; // Uppercase letter
+        if (/[a-z]/.test(password)) strength += 1; // Lowercase letter
+        if (/[0-9]/.test(password)) strength += 1; // Number
+        if (/[\W_]/.test(password)) strength += 1; // Special character
+        if (password.length >= 8) strength += 1; // Minimum length of 8
+
+        switch (strength) {
+            case 0:
+            case 1:
+                strengthMeterFill.style.width = "20%";
+                strengthMeterFill.style.backgroundColor = "red";
+                strengthText.textContent = "Weak";
+                break;
+            case 2:
+                strengthMeterFill.style.width = "40%";
+                strengthMeterFill.style.backgroundColor = "orange";
+                strengthText.textContent = "Fair";
+                break;
+            case 3:
+                strengthMeterFill.style.width = "60%";
+                strengthMeterFill.style.backgroundColor = "yellow";
+                strengthText.textContent = "Good";
+                break;
+            case 4:
+                strengthMeterFill.style.width = "80%";
+                strengthMeterFill.style.backgroundColor = "lightgreen";
+                strengthText.textContent = "Strong";
+                break;
+            case 5:
+                strengthMeterFill.style.width = "100%";
+                strengthMeterFill.style.backgroundColor = "green";
+                strengthText.textContent = "Very Strong";
+                break;
+            default:
+                strengthMeterFill.style.width = "0%";
+                strengthText.textContent = "Weak";
+        }
+
+        // Also check if passwords match to update button state in real-time
+        checkPasswordsMatch();
+    }
+
+    let otpVerified = false;
+    function sendOTP() {
+        const email = document.getElementById('emailInput').value;
+        fetch('/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emailReceiver: email })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('otpSection').style.display = 'block';
+            } else {
+                alert("Error sending OTP. Try again.");
+            }
+        });
+    }
+    
+    function verifyOTP() {
+        const otp = document.getElementById('otpInput').value;
+        const email = document.getElementById('emailInput').value;
+        fetch('/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ otp, emailReceiver: email })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const messageDiv = document.getElementById('otpMessage');
+            if (data.success) {
+                messageDiv.innerHTML = "<span style='color: green;'>OTP Verified!</span>";
+                otpVerified = true;
+                checkPasswordsMatch();
+            } else {
+                messageDiv.innerHTML = "<span style='color: red;'>Invalid OTP. Try again.</span>";
+                otpVerified = false;
+            }
+        });
+    }
+
+    function checkPasswordsMatch() {
+        const password = document.getElementById("password").value;
+        const repeatPassword = document.getElementById("repeatPassword").value;
+        const submitButton = document.getElementById("submitButton");
+
+        if (password === repeatPassword && password !== "" && otpVerified) {
+            submitButton.classList.remove("disabled");
+            submitButton.classList.add("enabled");
+            submitButton.disabled = false;
+            submitButton.textContent = "Create Account";
+        } else {
+            submitButton.classList.remove("enabled");
+            submitButton.classList.add("disabled");
+            submitButton.disabled = true;
+            submitButton.textContent = "Passwords or OTP do not match";
+        }
+    }
+
+</script>
+
+
+</body>
+</html>

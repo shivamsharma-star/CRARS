@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescue Agency Resource System</title>
+    <link rel="stylesheet" href="styles-main.css">
+    <link rel="stylesheet" href="alert.css">
+    <link rel="stylesheet" href="plus.css">
+    <style>
+        a {
+            text-decoration: none;
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="background-image"></div>
+    <!-- Header -->
+    <header>
+        <img src="/images/final 1 with white edges.png" alt="Logo">
+    </header>
+
+    <!-- Space between header and content -->
+    <div class="topbar"></div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Section: Map -->
+        <div id="mapdata">
+            <div id="map"></div> 
+        </div>
+
+        <!-- Right Section: Alerts and Menu -->
+        <div class="menu-grid">
+            <!-- Alerts Section -->
+            <div class="alert-section">Alerts</div>
+
+            <!-- Search and Filter Section -->
+            <div class="search-filter">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search Alerts..." class="search-input">
+                    <button class="search-btn">Search</button>
+                </div>
+                <div class="filter-dropdown">
+                    <select class="filter-select">
+                        <option value="my-alert">My Alerts</option>
+                        <option value="all-alerts">All Alerts</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Alert Items -->
+            <div class="alerts-grid">
+                <% if (alert_result && alert_result.length > 0) { %>
+                    <% alert_result.forEach(alert => { %>
+                        <div 
+                            class="alert-item" 
+                            data-lat="<%= alert.latitude %>" 
+                            data-lng="<%= alert.longitude %>">
+                            <h4 class="alert-title"><%= alert.title %></h4>
+                            <p class="alert-description"><%= alert.dis %></p>
+                            <div class="alert-actions">
+                                <% if (alert.sender_id === user.id) { %>
+                                    <button class="delete-btn">Delete</button>
+                                <% } else { %>
+                                    <a href="/alert?id=<%= alert.alert_id %>" class="update-btn">Response</a>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>No alerts found.</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Leaflet Map
+        var map = L.map('map').setView([23.4733, 77.9470], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Define a custom marker icon
+        var customIcon = L.icon({
+            iconUrl: 'images/21434441[1].png', // Path to your custom icon
+            iconSize: [22.5, 47.5],
+            iconAnchor: [16, 32],
+            popupAnchor: [0, -32]
+        });
+
+        // Add markers for each alert with custom icons
+        document.querySelectorAll('.alert-item').forEach(alertItem => {
+            var lat = parseFloat(alertItem.getAttribute('data-lat'));
+            var lng = parseFloat(alertItem.getAttribute('data-lng'));
+            var title = alertItem.querySelector('.alert-title').textContent;
+
+            if (!isNaN(lat) && !isNaN(lng)) {
+                L.marker([lat, lng], { icon: customIcon })
+                    .addTo(map)
+                    .bindPopup(title);
+            } else {
+                console.error(`Invalid coordinates for alert: ${title}`, { lat, lng });
+            }
+        });
+    </script>
+</body>
+</html>

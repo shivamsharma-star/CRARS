@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rescue Agency Resource System</title>
+    <link rel="stylesheet" href="styles-main.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+  <div class="background-image"></div>
+    <!-- Header -->
+     
+  <header>
+      <img src="/images/final 1 with white edges.png" alt="">
+        <h4></h4>
+    </header>
+ <div class="test"></div>
+  <div class="topbar"></div>
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Section: Google Map -->
+        <div id="mapdata">
+            <div id="map"> </div> </div>
+
+         
+            
+        <!-- Right Section: Menu Grid -->
+        <div class="menu-grid">
+            <div class="alert-section">  <h4>Welcome, <%= user.name %>!</h4></div>
+            <div class="grid-container">
+              <a href="/profile/<%= user.id %>"><div class="menu-item">
+                <img src="https://cdn-icons-png.flaticon.com/512/8443/8443082.png" alt="Icon 1">
+                <p>Profile</p>
+            </div>
+        </a> 
+               
+        <a href="resources">
+        <div class="menu-item">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3900/3900756.png" alt="Icon 2">
+                    <p>Resources</p>
+                </div>
+              </a>
+              <a href="ajency">
+                <div class="menu-item">
+                    <img src="https://cdn-icons-png.freepik.com/512/4325/4325947.png" alt="Icon 3">
+                    <p>Rescue Agency</p>
+                </div>
+              </a>
+                <a href="/alert">
+                <div class="menu-item">
+                    <img src="https://cdn-icons-png.flaticon.com/512/559/559384.png" alt="Icon 4">
+                    <p>Alerts</p>
+                </div>
+              </a>
+               <a href="/metachat"> <div class="menu-item">
+                    <img src="https://cdn.iconscout.com/icon/free/png-256/free-chat-icon-download-in-svg-png-gif-file-formats--message-communication-chatting-conversation-feedback-pack-business-icons-1794829.png?f=webp&w=256" alt="Icon 5">
+                    <p>Live chat</p>
+                </div>
+              </a>
+
+               <a href="/about"> <div class="menu-item">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2716/2716054.png" alt="Icon 6">
+                    <p>Account Upload</p>
+                </div>
+              </a>
+                <!-- <div class="menu-item">
+                    <img src="icon7.png" alt="Icon 7">
+                    <p>Function 7</p>
+                </div>
+                <div class="menu-item">
+                    <img src="icon8.png" alt="Icon 8">
+                    <p>Function 8</p>
+                </div>
+                <div class="menu-item">
+                    <img src="icon9.png" alt="Icon 9">
+                    <p>Function 9</p> -->
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- <script>
+        // Initialize the map and set its view to a default location with zoom level
+const map = L.map('map').setView([20.5937, 78.9629], 5); // Default to center of India
+
+// Add OpenStreetMap tiles
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '© OpenStreetMap'
+}).addTo(map);
+//https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+// User data - Replace these with your actual data
+const user = {
+  name: "<%= user.name %>",         // user's name from the session
+  location: "<%= user.location %>", // human-readable location name if you have it
+  latitude: <%= user.latitude %>,   // latitude coordinate of the user
+  longitude: <%= user.longitude %>, // longitude coordinate of the user
+  profileLink: "/user-profile"      // replace with the URL for the user's profile
+};
+
+// Add a marker to the map at the user's location
+const marker = L.marker([user.latitude, user.longitude]).addTo(map);
+
+// Bind a popup to the marker with the user's name
+marker.bindPopup(`<b>${user.name}</b><br>${user.location}`).openPopup();
+
+// Add click event to the marker to redirect to the user's profile page
+marker.on('click', function() {
+  window.location.href = user.profileLink;
+});
+
+    </script> -->
+
+
+<script>// Initialize the map and set its view to a default location with zoom level
+    const map = L.map('map').setView([20.5937, 78.9629], 5); // Default to center of India
+    
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
+    
+    // User data - Replace these with your actual data
+    const user = {
+      name: "<%= user.name %>",         // user's name from the session
+      location: "<%= user.location %>", // human-readable location name if you have it
+      latitude: <%= user.latitude %>,   // latitude coordinate of the user
+      longitude: <%= user.longitude %>, // longitude coordinate of the user
+      profileLink: "/user-profile"      // replace with the URL for the user's profile
+    };
+    
+    // Create a custom icon for the marker
+    const customIcon = L.icon({
+      iconUrl: 'images/21434441[1].png', // Replace with the path to your custom marker icon
+      iconSize:[22.5, 47.5], // Adjust size as needed
+      iconAnchor: [16, 32], // Anchor the icon to its center
+      popupAnchor: [0, -32] // Position popup above the icon
+    });
+    
+    // Add a marker to the map at the user's location with the custom icon
+    const marker = L.marker([user.latitude, user.longitude], { icon: customIcon }).addTo(map);
+    
+    // Bind a popup to the marker with the user's name
+    marker.bindPopup(`<b>${user.name}</b><br>${user.location}`).openPopup();
+    
+    // Add click event to the marker to redirect to the user's profile page
+    marker.on('click', function() {
+      window.location.href = user.profileLink;
+    });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescue Agency Resource System</title>
+    <link rel="stylesheet" href="styles-main.css">
+    <link rel="stylesheet" href="chat-list.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+  <div class="background-image"></div>
+
+    <!-- Header -->
+    <header>
+      <img src="/images/final 1 with white edges.png" alt="Logo">
+      <!-- <h4>Rescue Agency Resource System</h4> -->
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Map Section -->
+        <div id="mapdata">
+            <div id="contacts-map"></div>
+        </div>
+
+        <!-- Contacts Section -->
+        <div class="contacts-section">
+            <h3>Contacts</h3>
+            <div class="contacts-list">
+                <% users.forEach(user => { %>
+                    <div class="contact" data-lat="<%= user.latitude %>" data-lng="<%= user.longitude %>">
+                        <img src="https://via.placeholder.com/50" alt="Profile Picture">
+                        <p><%= user.user_name %></p>
+                        <a href="/profile/<%= user.user_id %>" class="profile-btn">Profile</a>
+                        <a href="/chat" class="chat-btn">Chat</a>
+                        <!-- <a href="/chat/<%= user.user_id %>" class="chat-btn">Chat</a> -->
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet Map Script -->
+    <script>
+        // Initialize OpenStreetMap
+      // Initialize OpenStreetMap
+var map = L.map('contacts-map').setView([23.4733, 77.9470], 6);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// Define a custom marker icon
+var customIcon = L.icon({
+    iconUrl: 'images/21434441[1].png', // Replace with the path to your custom icon
+    iconSize: [22.5, 47.5], // Customize size as needed
+    iconAnchor: [16, 32], // Point of the icon which will correspond to marker's location
+    popupAnchor: [0, -32] // Point from which the popup should open relative to the iconAnchor
+});
+
+// Add markers for each contact with custom icons
+document.querySelectorAll('.contact').forEach(contact => {
+    var lat = contact.getAttribute('data-lat');
+    var lng = contact.getAttribute('data-lng');
+    var name = contact.querySelector('p').textContent;
+
+    // Add a marker with a custom icon and popup
+    L.marker([lat, lng], { icon: customIcon }).addTo(map)
+        .bindPopup(name)
+        .openPopup();
+});
+
+    </script>
+</body>
+</html>

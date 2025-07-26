@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert Details</title>
+    <link rel="stylesheet" href="styles-main.css">
+    <link rel="stylesheet" href="profile.css">
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling with Background GIF */
+        body {
+            font-family: Arial, sans-serif;
+            background: url('/images/8552773-hd_1920_1080_30fps\ \(1\).gif') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+        }
+
+        /* Header Styling */
+        header {
+            background-color: rgba(255, 69, 0, 0.8);
+            padding: 10px;
+            display: flex;
+        }
+        header img {
+            width: 120px;
+            height: 60px;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Google Map Section */
+        #mapdata {
+            width: 50%;
+            height: 100%;
+            padding: 2.5px;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Right Side: Menu Grid Section */
+        .menu-grid {
+            width: 50%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Alert Section */
+        .alert-section {
+            background-color: rgba(255, 69, 0, 0.6);
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Profile Container */
+        .profile-container {
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(0, 0, 0, 0);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .profile-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ffffff53;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+        }
+
+        .profile-form input[readonly] {
+            background-color: rgba(5, 0, 0, 0.5);
+            color: #15fd00;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            #mapdata, .menu-grid {
+                width: 100%;
+                height: 50vh;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" /> 
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> 
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <img src="/images/final 1 with white edges.png" alt="Logo">
+  </header>
+
+  <!-- Main Container -->
+  <div class="main-container">
+    <!-- Left Section: Google Map -->
+    <div id="mapdata">
+      <div id="map"></div>
+    </div>
+
+    <!-- Right Section: Menu Grid -->
+    <div class="menu-grid">
+      <div class="alert-section">  
+        <h2><%= alert.title %></h2>
+        <p><%= alert.dis %></p>
+        <p>Type: <%= alert.type %></p>
+        <p>Reported At: <%= new Date(alert.time).toLocaleString() %></p>
+      </div>
+
+      <!-- Profile Section -->
+      <div class="profile-container">
+        <h1>Alert Details</h1>
+        <form class="profile-form">
+          <label hidden for="alert-id">Alert ID:</label>
+          <input hidden type="text" id="alert-id" name="alert-id" value="<%= alert.alert_id %>" readonly>
+
+          <label for="title">Title:</label>
+          <input type="text" id="title" name="title" value="<%= alert.title %>" readonly>
+
+          <label for="type">Type:</label>
+          <input type="text" id="type" name="type" value="<%= alert.type %>" readonly>
+
+          <label for="description">Description:</label>
+          <input style="height:250px" type="text" id="description" name="description" value="<%= alert.dis %>" readonly>
+
+          <label hidden for="latitude">Alert Latitude:</label>
+          <input hidden type="text" id="latitude" name="latitude" value="<%= alert.alert_latitude %>" readonly>
+
+          <label hidden for="longitude">Alert Longitude:</label>
+          <input hidden type="text" id="longitude" name="longitude" value="<%= alert.alert_longitude %>" readonly>
+
+          <label for="time">Time:</label>
+          <input type="text" id="time" name="time" value="<%= alert.time %>" readonly>
+
+          <label for="sender-name">Sender Name:</label>
+          <input type="text" id="sender-name" name="sender-name" value="<%= alert.user_name %>" readonly>
+
+          <label for="sender-email">Sender Email:</label>
+          <input type="text" id="sender-email" name="sender-email" value="<%= alert.email %>" readonly>
+
+          <label hidden for="sender-location">Sender Location:</label>
+          <input hidden type="text" id="sender-location" name="sender-location" value="<%= alert.user_location %>" readonly>
+
+          <label  hidden hidden for="user-latitude">Sender Latitude:</label>
+          <input hidden type="text" id="user-latitude" name="user-latitude" value="<%= alert.user_latitude %>" readonly>
+
+          <label hidden hidden for="user-longitude">Sender Longitude:</label>
+          <input hidden type="text" id="user-longitude" name="user-longitude" value="<%= alert.user_longitude %>" readonly>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet Map Script -->
+  <script>
+    // Initialize the map and set its view to the alert location
+    const map = L.map('map').setView([<%= alert.alert_latitude %>, <%= alert.alert_longitude %>], 13);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Add a marker for the alert location
+    L.marker([<%= alert.alert_latitude %>, <%= alert.alert_longitude %>]).addTo(map)
+      .bindPopup('<b><%= alert.title %></b><br><%= alert.dis %>').openPopup();
+  </script>
+</body>
+</html>

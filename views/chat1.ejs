@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescue Agency Resource System</title>
+    <link rel="stylesheet" href="styles-main.css">
+    <link rel="stylesheet" href="style-chat.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+  <div class="background-image"></div>
+    <!-- Header -->
+    <header>
+      <img src="/images/final 1 with white edges.png" alt="">
+        <h4></h4>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Section: Google Map -->
+        <div id="mapdata">
+            <div class="sender-reciver">
+            <div style="background-color: rgba(255, 0, 0, 0.692);" class="contact" data-lat="28.7041" data-lng="77.1025">
+                <img src="https://via.placeholder.com/50" alt="Profile">
+                <p>shivam sharma</p>
+                <p>. (you)</p>
+            </div> 
+            <div  style="background-color: rgba(0, 255, 42, 0.541);" class="contact" data-lat="28.7041" data-lng="77.1025">
+                <img src="https://via.placeholder.com/50" alt="Profile">
+                <p>shivam sharma</p>
+                <p>. (Reciver)</p>
+            </div>   
+        </div>   
+            <!-- <div id="map"> </div>  -->
+            <div id="contacts-map"></div>  
+        </div>
+
+         
+            
+        <!-- Right Section: Menu Grid -->
+        <!-- <div class="menu-grid"> -->
+            <!-- <div class="alert-section">Important Alerts for Rescue Teams!</div> -->
+<!-- chat screen interface -->
+
+<div class="chat-box">
+    <!-- <div class="chat-header"> -->
+        
+    <!-- </div> -->
+    <div class="chat-messages">
+        <p class="sent">Hello, how are you?</p>
+        <p class="received">I’m good, thanks! How about you?</p>
+    </div>
+    <div class="chat-input">
+        <input type="text" placeholder="Type a message..." />
+        <button>Send</button>
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+            <!-- <div class="grid-container">
+                <div class="menu-item">
+                    <img src="https://cdn-icons-png.flaticon.com/512/8443/8443082.png" alt="Icon 1">
+                    <p>Profile</p>
+                </div>
+                <div class="menu-item">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3900/3900756.png" alt="Icon 2">
+                    <p>Resources</p>
+                </div>
+                <div class="menu-item">
+                    <img src="https://cdn-icons-png.freepik.com/512/4325/4325947.png" alt="Icon 3">
+                    <p>Rescue Agency</p>
+                </div>
+                <div class="menu-item">
+                    <img src="https://cdn-icons-png.flaticon.com/512/559/559384.png" alt="Icon 4">
+                    <p>Alerts</p>
+                </div>
+                <div class="menu-item">
+                    <img src="icon5.png" alt="Icon 5">
+                    <p>Function 5</p>
+                </div>
+                <div class="menu-item">
+                    <img src="icon6.png" alt="Icon 6">
+                    <p>Function 6</p>
+                </div> -->
+                <!-- <div class="menu-item">
+                    <img src="icon7.png" alt="Icon 7">
+                    <p>Function 7</p>
+                </div>
+                <div class="menu-item">
+                    <img src="icon8.png" alt="Icon 8">
+                    <p>Function 8</p>
+                </div>
+                <div class="menu-item">
+                    <img src="icon9.png" alt="Icon 9">
+                    <p>Function 9</p> -->
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        
+            // Initialize OpenStreetMap
+            var map = L.map('contacts-map').setView([20.5937, 78.9629], 4);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+    
+            // Add markers from contact data
+            document.querySelectorAll('.contact').forEach(contact => {
+                var lat = contact.getAttribute('data-lat');
+                var lng = contact.getAttribute('data-lng');
+                L.marker([lat, lng]).addTo(map)
+                    .bindPopup(contact.querySelector('p').textContent)
+                    .openPopup();
+            });
+      
+    </script>
+</body>
+</html>

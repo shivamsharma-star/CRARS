@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-right">
+            <img src="/images/final-1-with-white-edges.png" alt="Logo" class="logo">
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="login-container">
+        <div class="overlay">
+            <!-- Login Form -->
+            <div class="form-box" id="loginForm">
+                <h2>Login</h2>
+                <form action="/login" method="post">
+                    <div class="input-box">
+                        <input type="text" required>
+                        <label>Username</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" required>
+                        <label>Password</label>
+                    </div>
+                    <button type="submit" class="btn">Get Started</button>
+                    <div class="extra-options">
+                        <label><input type="checkbox"> Keep Logged In</label>
+                        <a href="#" class="forgot">Forgot Password?</a>
+                    </div>
+                </form>
+                <div class="footer-links">
+                    <a href="#" id="showSignUp">Create Account</a> | <a href="#">Need Help?</a>
+                </div>
+            </div>
+
+            <!-- Signup Form -->
+            <div class="form-box" id="signUpForm" style="display: none;">
+                <h2>Create Account</h2>
+                <form id="createAccountForm" onsubmit="return validatePasswords();">
+                    <div class="input-box">
+                        <input type="text" id="fullName" required>
+                        <label>Full Name</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="email" id="emailInput" required>
+                        <label>Email</label>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" id="password" required oninput="checkPasswordStrength()">
+                        <label>Password</label>
+                    </div>
+                    <div class="strength">
+                        <div class="strength-meter">
+                            <div id="strengthMeterFill" class="strength-meter-fill"></div>
+                        </div>
+                        <span id="strengthText">Weak</span>
+                    </div>
+                    <!--  -->
+                    
+                    <button type="button" onclick="sendOTP()" class="btn">Request OTP</button>
+                    <div id="otpSection" style="display: none;">
+                        <div class="input-box">
+                            <input type="text" id="otpInput" required>
+                            <label>OTP</label>
+                        </div>
+                        <button type="button" onclick="verifyOTP()" class="btn">Verify OTP</button>
+                        <div id="otpMessage"></div>
+                    </div>
+
+                    <!--  -->
+                    <button type="submit" id="submitButton" class="btn" disabled>Sign Up</button>
+                </form>
+                <div class="footer-links">
+                    <a href="#" id="showLogin">Already have an account? Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("showSignUp").onclick = function (e) {
+            e.preventDefault();
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("signUpForm").style.display = "block";
+        };
+        document.getElementById("showLogin").onclick = function (e) {
+            e.preventDefault();
+            document.getElementById("signUpForm").style.display = "none";
+            document.getElementById("loginForm").style.display = "block";
+        };
+
+        function sendOTP() {
+            const email = document.getElementById('emailInput').value;
+            fetch('/send-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ emailReceiver: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('otpSection').style.display = 'block';
+                } else {
+                    alert("Error sending OTP. Try again.");
+                }
+            });
+        }
+
+        function verifyOTP() {
+            const otp = document.getElementById('otpInput').value;
+            const email = document.getElementById('emailInput').value;
+            fetch('/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ otp, emailReceiver: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('otpMessage');
+                if (data.success) {
+                    messageDiv.innerHTML = "<span style='color: green;'>OTP Verified!</span>";
+                    document.getElementById('submitButton').disabled = false;
+                } else {
+                    messageDiv.innerHTML = "<span style='color: red;'>Invalid OTP. Try again.</span>";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

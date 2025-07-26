@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescue Agency Resource System</title>
+    <link rel="stylesheet" href="styles-main.css">
+    <link rel="stylesheet" href="alert.css">
+    <link rel="stylesheet" href="plus.css">
+<style>
+    a{
+        text-decoration: none;
+    }
+</style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+  <div class="background-image"></div>
+    <!-- Header -->
+    <header>
+        <img src="/images/final 1 with white edges.png" alt="">
+          
+      </header>
+
+<!-- space between the, main cotaner and map of our page -->
+
+<div class="topbar"></div>
+
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Section: Google Map -->
+        <div id="mapdata">
+            <div id="map"> </div> 
+        </div>
+
+         
+            
+          <!-- Right Section: Menu Grid -->
+          <div class="menu-grid">
+            <!-- Alert Section -->
+            <div class="alert-section">Alerts</div>
+
+            <!-- Search and Filter Section -->
+            <div class="search-filter">
+                <div class="search-bar">
+                    <input type="text" placeholder="Search Alerts..." class="search-input">
+                    <button class="search-btn">Search</button>
+                </div>
+                <div class="filter-dropdown">
+                    <select class="filter-select">
+                        <option value="my-alert">My Alerts</option>
+                        <option value="all-alerts">All Alerts</option>
+                    </select>
+                </div>
+            </div>
+
+             <!-- Button inside Menu Grid -->
+  <div class="main-page">
+    <div class="floating-btn-container">   
+    <button id="open-modal">+</button>
+    </div>
+</div>
+
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Fill Information</h2>
+            <button id="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form action="create_alert" method="post">
+            <input type="text" id="name" placeholder="Title" name="sender_id" hidden value="<%= user.id %>">
+            <input type="text" id="name" placeholder="Title" name="title">
+            <input type="text" id="college" placeholder="Description"  name="discription">
+            <input type="text" id="location" placeholder="locationdetails"  name="longitude" value="<%= user.longitude %>" hidden>
+            <input type="text" id="location" placeholder="locationdetails"  name="lattitude" value="<%= user.latitude %>" hidden>
+            <input type="text" id="location" placeholder="locationdetails"  name="cityname" value="<%= user.location %>" hidden>
+            <input type="text" id="type" placeholder="type"  name="type">
+        </div>
+        <div class="modal-footer">
+            <button id="submit-btn">Submit</button>
+        </div>
+    </form>
+    </div>
+</div>
+
+<script>
+  const openModalBtn = document.getElementById('open-modal');
+  const closeModalBtn = document.getElementById('close-modal');
+  const modal = document.getElementById('modal');
+  const submitBtn = document.getElementById('submit-btn');
+
+  // Open Modal
+  openModalBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+  });
+
+  // Close Modal`
+  closeModalBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+  });
+
+  // Submit Information
+  submitBtn.addEventListener('click', () => {
+      const name = document.getElementById('name').value;
+      const college = document.getElementById('college').value;
+
+      if (name && college) {
+          alert(`Name: ${name}\nCollege: ${college}`);
+          modal.style.display = 'none'; // Close modal after submitting
+      } else {
+          alert('Please fill in all fields!');
+      }
+  });
+</script>
+
+ <!-- Button inside Menu Grid  end-->
+
+
+            <!-- Alerts Grid -->
+            <div class="alerts-grid">
+            
+<!-- alert ejs -->
+<% if (alert_result && alert_result.length > 0) { %>
+    <% alert_result.forEach(alert => { %>
+        <div 
+            class="alert-item" 
+            data-lat="<%= alert.latitude %>" 
+            data-lng="<%= alert.longitude %>">
+            <h4 class="alert-title"><%= alert.title %></h4>
+            <p class="alert-description"><%= alert.dis %></p>
+            <div class="alert-actions">
+                <% if (alert.sender_id === user.id) { %>
+                    <form method="post" action="/deletealert" class="delete-btn1"><input hidden type="text" name="alert_id" value="<%= alert.alert_id %>"><input  class="delete-btn" type="submit" value="Delete"></form>
+                    <a style="text-align: center;" href="/ad/<%= alert.alert_id %>" class="update-btn">Update</a>
+                <% } else { %>
+                    <a style="text-align: center;" href="/ad/<%= alert.alert_id %>" class="update-btn">Response</a>
+                <% } %>
+            </div>
+        </div>
+    <% }); %>
+<% } else { %>
+    <p>No alerts found.</p>
+<% } %>
+
+
+          </div>
+          
+          </div>
+
+         
+     </div>  
+    </div>
+
+    <script>
+   // Initialize Leaflet Map
+   var map = L.map('map').setView([23.4733, 77.9470], 6);
+   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+   }).addTo(map);
+
+   // Define a custom marker icon
+   var customIcon = L.icon({
+       iconUrl: 'https://media.tenor.com/rWiNCe48R3cAAAAj/red-alam.gif', // Path to your custom icon
+       iconSize: [30, 30],
+       iconAnchor: [16, 32],
+       popupAnchor: [0, -32]
+   });
+
+   // Add markers for each alert with custom icons
+   document.querySelectorAll('.alert-item').forEach(alertItem => {
+       var lat = parseFloat(alertItem.getAttribute('data-lat'));
+       var lng = parseFloat(alertItem.getAttribute('data-lng'));
+       var title = alertItem.querySelector('.alert-title').textContent;
+
+       if (!isNaN(lat) && !isNaN(lng)) {
+           L.marker([lat, lng], { icon: customIcon })
+               .addTo(map)
+               .bindPopup(title);
+       } else {
+           console.error(`Invalid coordinates for alert: ${title}`, { lat, lng });
+       }
+   });
+
+    </script>
+</body>
+</html>

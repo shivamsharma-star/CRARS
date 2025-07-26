@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Input Feature</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Voice Input Feature</h1>
+    <!-- <img src="https://media.lordicon.com/icons/wired/lineal/188-microphone-recording.gif" alt=""> -->
+    <button style="text-decoration: none;" id="start-btn"><img src="https://media.lordicon.com/icons/wired/lineal/188-microphone-recording.gif" alt=""></button>
+    <p id="result">Speak something...</p>
+
+    <script>
+        // Check if browser supports SpeechRecognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognition) {
+            document.getElementById('result').innerText = "Speech Recognition is not supported in your browser.";
+        } else {
+            // Create an instance of SpeechRecognition
+            const recognition = new SpeechRecognition();
+
+            // Set options
+            recognition.lang = 'en-US'; // Set language
+            recognition.interimResults = false; // Only final results
+            recognition.continuous = false; // Stop after a single result
+
+            const startButton = document.getElementById('start-btn');
+            const resultDisplay = document.getElementById('result');
+
+            // Start recognition on button click
+            startButton.addEventListener('click', () => {
+                recognition.start();
+                resultDisplay.innerText = "Listening...";
+            });
+
+            // Capture speech result
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                resultDisplay.innerText = `You said: "${transcript}"`;
+            };
+
+            // Handle errors
+            recognition.onerror = (event) => {
+                resultDisplay.innerText = `Error: ${event.error}`;
+            };
+
+            // Notify when speech recognition ends
+            recognition.onend = () => {
+                resultDisplay.innerText += "\nRecognition ended.";
+            };
+        }
+    </script>
+</body>
+</html>
